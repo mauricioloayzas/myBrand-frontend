@@ -5,14 +5,22 @@ import Layout from "../components/Layout";
 import Particle from "../components/Particle";
 import Socialicons from "../components/Socialicons";
 import Spinner from "../components/Spinner";
+import { Information } from  "../data/db/Information";
 
 function Home({ lightMode }) {
   const [information, setInformation] = useState("");
 
   useEffect(() => {
-    axios.get("/api/information").then((response) => {
-      setInformation(response.data);
-    });
+    const fetchData = async () => {
+      const docData = await Information();
+      if(docData !== null) {
+        await setInformation(docData);
+      }else{
+        console.log("No document found");
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -35,7 +43,7 @@ function Home({ lightMode }) {
                     Hi, I am{" "}
                     <span className="color-theme">{information.name}</span>
                   </h1>
-                  <p>{information.aboutContent}</p>
+                  <p>{information.about_content}</p>
                   <Socialicons bordered />
                 </div>
               </div>
