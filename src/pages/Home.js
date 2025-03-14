@@ -12,11 +12,11 @@ function Home({ lightMode }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const docData = await Information();
-      if(docData !== null) {
-        await setInformation(docData);
+      const docDataInformation = await Information();
+      if(docDataInformation !== null) {
+        await setInformation(docDataInformation);
       }else{
-        console.log("No document found");
+        console.log("No document found: Information");
       }
     };
 
