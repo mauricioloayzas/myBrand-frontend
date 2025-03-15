@@ -1,5 +1,7 @@
 import { db } from "../../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { OneNationality } from "./Nacionality";
+import {collection, query, where, getDocs, doc} from "firebase/firestore";
+import {OneLanguage} from "./Language";
 
 export async function Information(){
   let docData = null;
@@ -16,7 +18,22 @@ export async function Information(){
       );
       const querySnapshot = await getDocs(informationsRef);
       if (!querySnapshot.empty) {
-        docData = querySnapshot.docs[0].data();
+        //docData = querySnapshot.docs[0].data();
+        docData = await Promise.all(querySnapshot.docs.map(async (docRef) => {
+          let data = docRef.data();
+
+          if(data.nationality){
+            data.nationality = await OneNationality(data.nationality);
+          }
+
+          if(data.language){
+            data.language = await OneLanguage(data.language);
+          }
+
+          return data;
+        }));
+        docData = docData[0];
+
         localStorage.setItem(`Informations_${appId}`, JSON.stringify(docData));
       }else{
         console.log("No document found with app_id:", appId);

@@ -10,6 +10,7 @@ import Service from "../components/Service";
 import Spinner from "../components/Spinner";
 import Testimonial from "../components/Testimonial";
 import { Image } from "../components/common/Image";
+import {Information} from "../data/db/Information";
 
 function About() {
   const [toggler, setToggler] = useState(false);
@@ -44,9 +45,17 @@ function About() {
   };
 
   useEffect(() => {
-    axios.get("/api/information").then((response) => {
-      setInformation(response.data);
-    });
+    const fetchData = async () => {
+      const docDataInformation = await Information();
+      if(docDataInformation !== null) {
+        await setInformation(docDataInformation);
+      }else{
+        console.log("No document found: Information");
+      }
+    };
+
+    fetchData();
+
     axios.get("/api/services").then((response) => {
       setServices(response.data);
     });
@@ -72,7 +81,7 @@ function About() {
               <div className="col-lg-6">
                 <div className="mi-about-image">
                   <Image
-                    src={information.aboutImage}
+                    src={information.about_image}
                     loader="/images/about-image-placeholder.png"
                     alt="aboutimage"
                     onClick={() => handleToggler(!toggler)}
@@ -82,7 +91,7 @@ function About() {
                   </span>
                   <FsLightbox
                     toggler={toggler}
-                    sources={[information.aboutImageLg]}
+                    sources={[information.about_image]}
                   />
                 </div>
               </div>
@@ -92,16 +101,9 @@ function About() {
                     I am <span className="color-theme">{information.name}</span>
                   </h3>
                   <p>
-                    I am a frontend web developer. I can provide clean code and
-                    pixel perfect design. I also make website more & more
-                    interactive with web animations.
+                    {information.about_content}
                   </p>
                   <ul>
-                    {!information.name ? null : (
-                      <li>
-                        <b>Full Name</b> {information.name}
-                      </li>
-                    )}
                     {!information.age ? null : (
                       <li>
                         <b>Age</b> {information.age} Years
@@ -114,27 +116,17 @@ function About() {
                     )}
                     {!information.nationality ? null : (
                       <li>
-                        <b>Nationality</b> {information.nationality}
+                        <b>Nationality</b> {information.nationality.country}
                       </li>
                     )}
                     {!information.language ? null : (
                       <li>
-                        <b>Languages</b> {information.language}
+                        <b>Languages</b> {information.language.name}
                       </li>
                     )}
                     {!information.email ? null : (
                       <li>
                         <b>Email</b> {information.email}
-                      </li>
-                    )}
-                    {!information.address ? null : (
-                      <li>
-                        <b>Address</b> {information.address}
-                      </li>
-                    )}
-                    {!information.freelanceStatus ? null : (
-                      <li>
-                        <b>Freelance</b> {information.freelanceStatus}
                       </li>
                     )}
                   </ul>

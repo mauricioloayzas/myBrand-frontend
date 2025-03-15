@@ -17,7 +17,6 @@ export async function SocialLink(){
       );
       const querySnapshot = await getDocs(socialNetworksRef);
       if (!querySnapshot.empty) {
-        docData = querySnapshot.docs[0].data();
         docData = await Promise.all(querySnapshot.docs.map(async (docRef) => {
           let data = docRef.data();
 
